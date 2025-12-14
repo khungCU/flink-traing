@@ -46,11 +46,6 @@ public class RideCleansingExercise {
         this.sink = sink;
     }
 
-    /**
-     * Main method.
-     *
-     * @throws Exception which occurs during job execution.
-     */
     public static void main(String[] args) throws Exception {
         RideCleansingExercise job =
                 new RideCleansingExercise(new TaxiRideGenerator(), new PrintSinkFunction<>());
@@ -58,14 +53,7 @@ public class RideCleansingExercise {
         job.execute();
     }
 
-    /**
-     * Creates and executes the long rides pipeline.
-     *
-     * @return {JobExecutionResult}
-     * @throws Exception which occurs during job execution.
-     */
     public JobExecutionResult execute() throws Exception {
-
         // set up streaming execution environment
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 

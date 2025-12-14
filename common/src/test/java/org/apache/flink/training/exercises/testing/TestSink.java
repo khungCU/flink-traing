@@ -25,6 +25,11 @@ import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
 
 import java.util.List;
 
+/*
+The TestSink is indeed a simple test utility that 
+collects results from upstream operators for verification 
+in tests.
+*/
 public class TestSink<OUT> extends RichSinkFunction<OUT> {
 
     private final String name;
