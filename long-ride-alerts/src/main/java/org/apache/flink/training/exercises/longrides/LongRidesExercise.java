@@ -21,6 +21,8 @@ package org.apache.flink.training.exercises.longrides;
 import org.apache.flink.annotation.VisibleForTesting;
 import org.apache.flink.api.common.JobExecutionResult;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
+import org.apache.flink.api.common.state.ValueState;
+import org.apache.flink.api.common.state.ValueStateDescriptor;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -30,7 +32,6 @@ import org.apache.flink.streaming.api.functions.sink.SinkFunction;
 import org.apache.flink.streaming.api.functions.source.SourceFunction;
 import org.apache.flink.training.exercises.common.datatypes.TaxiRide;
 import org.apache.flink.training.exercises.common.sources.TaxiRideGenerator;
-import org.apache.flink.training.exercises.common.utils.MissingSolutionException;
 import org.apache.flink.util.Collector;
 
 import java.time.Duration;
@@ -97,18 +98,64 @@ public class LongRidesExercise {
 
     @VisibleForTesting
     public static class AlertFunction extends KeyedProcessFunction<Long, TaxiRide, Long> {
+        private transient ValueState<TaxiRide> rideState;
 
         @Override
-        public void open(Configuration config) throws Exception {
-            throw new MissingSolutionException();
+        public void open(Configuration config) {
+            ValueStateDescriptor<TaxiRide> rideStateDescriptor =
+                    new ValueStateDescriptor<>("ride event", TaxiRide.class);
+            rideState = getRuntimeContext().getState(rideStateDescriptor);
         }
 
         @Override
         public void processElement(TaxiRide ride, Context context, Collector<Long> out)
-                throws Exception {}
+                throws Exception {
+            TaxiRide savedRide = rideState.value();
+
+            if (savedRide == null) {
+                // we've never seen a START or END event for this rideId before
+                rideState.update(ride);
+                if (ride.isStart) {
+                    // register a timer for 2 hours from now
+                    context.timerService()
+                            .registerEventTimeTimer(ride.getEventTimeMillis() + 2 * 60 * 60 * 1000);
+                }
+            } else {
+                // we've seen the other event for this rideId
+                if (ride.isStart != savedRide.isStart) {
+                    // the events are START and END, so the ride is complete
+                    long start =
+                            ride.isStart
+                                    ? ride.getEventTimeMillis()
+                                    : savedRide.getEventTimeMillis();
+                    long end =
+                            ride.isStart
+                                    ? savedRide.getEventTimeMillis()
+                                    : ride.getEventTimeMillis();
+
+                    if (end - start > 2 * 60 * 60 * 1000) {
+                        out.collect(ride.rideId);
+                    }
+                }
+                // clear the state and any timers
+                if (savedRide.isStart) {
+                    context.timerService()
+                            .deleteEventTimeTimer(
+                                    savedRide.getEventTimeMillis() + 2 * 60 * 60 * 1000);
+                }
+                rideState.clear();
+            }
+        }
 
         @Override
         public void onTimer(long timestamp, OnTimerContext context, Collector<Long> out)
-                throws Exception {}
+                throws Exception {
+            // if a timer fires, it means we have a START event, but never saw an END
+            TaxiRide savedRide = rideState.value();
+            if (savedRide != null && savedRide.isStart) {
+                out.collect(savedRide.rideId);
+                rideState.clear();
+            }
+        }
     }
 }

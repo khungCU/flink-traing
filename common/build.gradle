@@ -27,6 +27,9 @@ java {
 
 // common set of dependencies
 dependencies {
+    api "org.apache.flink:flink-streaming-java:${flinkVersion}"
+    api "org.apache.flink:flink-clients:${flinkVersion}"
+
     testApi "junit:junit:${junitVersion}"
     testApi "org.apache.flink:flink-streaming-java:${flinkVersion}:tests"
     testApi "org.apache.flink:flink-runtime:${flinkVersion}:tests"

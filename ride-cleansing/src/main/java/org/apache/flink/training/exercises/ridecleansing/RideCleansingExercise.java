@@ -68,8 +68,8 @@ public class RideCleansingExercise {
     public static class NYCFilter implements FilterFunction<TaxiRide> {
         @Override
         public boolean filter(TaxiRide taxiRide) throws Exception {
-            return GeoUtils.isInNYC(taxiRide.startLon, taxiRide.startLat) &&
-                    GeoUtils.isInNYC(taxiRide.endLon, taxiRide.endLat);
+            return GeoUtils.isInNYC(taxiRide.startLon, taxiRide.startLat)
+                    && GeoUtils.isInNYC(taxiRide.endLon, taxiRide.endLat);
         }
     }
 }

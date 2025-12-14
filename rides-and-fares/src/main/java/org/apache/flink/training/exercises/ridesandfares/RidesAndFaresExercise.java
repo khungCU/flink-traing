@@ -56,12 +56,6 @@ public class RidesAndFaresExercise {
         this.sink = sink;
     }
 
-    /**
-     * Creates and executes the pipeline using the StreamExecutionEnvironment provided.
-     *
-     * @throws Exception which occurs during job execution.
-     * @return {JobExecutionResult}
-     */
     public JobExecutionResult execute() throws Exception {
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -80,11 +74,6 @@ public class RidesAndFaresExercise {
         return env.execute("Join Rides with Fares");
     }
 
-    /**
-     * Main method.
-     *
-     * @throws Exception which occurs during job execution.
-     */
     public static void main(String[] args) throws Exception {
 
         RidesAndFaresExercise job =

@@ -23,6 +23,7 @@ import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.KeyedStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.functions.source.SourceFunction;
 import org.apache.flink.training.exercises.common.datatypes.TaxiRide;
 import org.apache.flink.training.exercises.common.sources.TaxiRideGenerator;
 
@@ -46,8 +47,11 @@ public class RideCountExample {
         // set up streaming execution environment
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
+        // The TaxiRideGenerator is a legacy SourceFunction.
+        SourceFunction<TaxiRide> source = new TaxiRideGenerator();
+
         // start the data generator
-        DataStream<TaxiRide> rides = env.addSource(new TaxiRideGenerator());
+        DataStream<TaxiRide> rides = env.addSource(source);
 
         // map each ride to a tuple of (driverId, 1)
         DataStream<Tuple2<Long, Long>> tuples =

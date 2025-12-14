@@ -25,14 +25,10 @@ import org.apache.flink.training.exercises.common.utils.MissingSolutionException
 /**
  * This allows the tests to be run against both the exercises and the solutions.
  *
- * <p>
- * If an exercise throws MissingSolutionException, then the solution is tested.
- * 
- * Tries your exercise implementation first
- * Falls back to the solution if not implemented
- * Lets real errors through for debugging
- * Enables one test to work for both learning and validation
- * 
+ * <p>If an exercise throws MissingSolutionException, then the solution is tested.
+ *
+ * <p>Tries your exercise implementation first Falls back to the solution if not implemented Lets
+ * real errors through for debugging Enables one test to work for both learning and validation
  */
 public class ComposedPipeline<IN, OUT> implements ExecutablePipeline<IN, OUT> {
 

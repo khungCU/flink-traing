@@ -51,7 +51,8 @@ public class RideCleansingIntegrationTest extends RideCleansingTestBase {
 
         TaxiRide toThePole = testRide(-73.9947F, 40.750626F, 0, 90); // (ends outside NYC)
         TaxiRide fromThePole = testRide(0, 90, -73.9947F, 40.750626F); // (ends outside NYC)
-        TaxiRide atPennStation = testRide(-73.9947F, 40.750626F, -73.9947F, 40.750626F); // (within NYC)
+        TaxiRide atPennStation =
+                testRide(-73.9947F, 40.750626F, -73.9947F, 40.750626F); // (within NYC)
         TaxiRide atNorthPole = testRide(0, 90, 0, 90); // (ends outside NYC)
 
         ParallelTestSource<TaxiRide> source =

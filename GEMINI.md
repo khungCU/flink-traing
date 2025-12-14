@@ -67,7 +67,7 @@ The project uses `spotless` to enforce code style. The style is based on Google 
 
 ### Dependencies
 
-The project uses Flink version `1.17.0`. The dependencies are managed in the `build.gradle` file. The `shadowJar` plugin is used to create fat jars with all the necessary dependencies.
+The project uses Flink version `1.20.0`. The dependencies are managed in the `build.gradle` file. The `shadowJar` plugin is used to create fat jars with all the necessary dependencies.
 
 ### Training Guideline
 Phase 1: The Fundamentals - Your First Flink Job
